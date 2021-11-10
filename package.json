@@ -1,0 +1,14 @@
+{
+  "name": "edubase-book-downloader",
+  "version": "1.0.0",
+  "description": "ery very basic puppeteer code that authenticates the user and navigates through a book in order to generate and store pdfs. For all that want to use proper note apps (not the f* edubase reader app).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrin",
+  "license": "GNU GPL v3",
+  "dependencies": {
+    "puppeteer": "^11.0.0"
+  }
+}
