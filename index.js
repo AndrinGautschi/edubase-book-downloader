@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 
 const login = async (browser, loginUrl, loginData) => {
   const page = await browser.newPage();
+  console.log(new Date().toISOString(), " --- try to log in");
   await page.goto(loginUrl);
   await page.waitForTimeout(10000);
   await page.keyboard.type(loginData.email);
@@ -10,7 +11,7 @@ const login = async (browser, loginUrl, loginData) => {
   await page.waitForTimeout(1000);
   await page.keyboard.press("Enter");
   await page.waitForTimeout(10000);
-  console.log(new Date().toISOString(),' --- logged in');
+  console.log(new Date().toISOString(), " --- logged in");
   return;
 };
 
@@ -19,20 +20,20 @@ const generatePDF = async (browser, urlDescriptor, requestToWaitFor) => {
 
   for (
     let index = urlDescriptor.startPage;
-    index <= urlDescriptor.endPage; 
+    index <= urlDescriptor.endPage;
     index++
   ) {
     if (index === urlDescriptor.startPage) {
       await page.goto(
         urlDescriptor.base.replace(urlDescriptor.pageIndicator, index)
       );
-      console.log(new Date().toISOString(),' --- opened page with book');
+      console.log(new Date().toISOString(), " --- opened page with book");
     } else {
       page.$$eval(
         "i.svg-icon-arrow.svg-icon-arrow_right.pointer.footer-page-navigation",
         (buttons) => buttons.forEach((button) => button.click())
       );
-      console.log(new Date().toISOString(),' --- clicked next page');
+      console.log(new Date().toISOString(), " --- clicked next page");
     }
 
     await page.waitForRequest(
@@ -41,6 +42,11 @@ const generatePDF = async (browser, urlDescriptor, requestToWaitFor) => {
         request.method() === requestToWaitFor.method,
       { timeout: 20000 }
     );
+
+    if (index === urlDescriptor.startPage) {
+      await page.waitForTimeout(5000); // just wait a couple of seconds more
+    }
+
     const pdfConfig = {
       path: `page-${index}.pdf`, // Saves pdf to disk.
       format: "A4",
@@ -48,7 +54,7 @@ const generatePDF = async (browser, urlDescriptor, requestToWaitFor) => {
     };
     await page.emulateMediaType("print");
     const pdf = await page.pdf(pdfConfig); // Return the pdf buffer. Useful for saving the file not to disk.
-    console.log(new Date().toISOString(),' --- downloaded pdf');
+    console.log(new Date().toISOString(), " --- downloaded pdf");
   }
 };
 
